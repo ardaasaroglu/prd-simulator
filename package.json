@@ -1,0 +1,20 @@
+{
+  "name": "prd-simulator",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Simulate building your PRD before engineers do. A panel of developer personas finds what would block them, a skeptic removes the noise, you get a punch list.",
+  "license": "MIT",
+  "author": "Arda Asaroglu (https://github.com/ardaasaroglu)",
+  "homepage": "https://github.com/ardaasaroglu/prd-simulator",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ardaasaroglu/prd-simulator.git"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.mjs"
+  }
+}

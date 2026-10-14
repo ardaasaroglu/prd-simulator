@@ -1,0 +1,4 @@
+# normalize line endings in the repo
+* text=auto eol=lf
+
+*.png binary

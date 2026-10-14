@@ -1,0 +1,21 @@
+{
+  "name": "prd-simulator",
+  "version": "0.1.0",
+  "description": "Simulate building your PRD before engineers do. A panel of developer personas finds what would block them, a skeptic removes the noise, you get a punch list.",
+  "author": {
+    "name": "Arda Asaroglu",
+    "url": "https://github.com/ardaasaroglu"
+  },
+  "homepage": "https://github.com/ardaasaroglu/prd-simulator",
+  "repository": "https://github.com/ardaasaroglu/prd-simulator",
+  "license": "MIT",
+  "keywords": [
+    "prd",
+    "product-management",
+    "requirements",
+    "user-stories",
+    "spec-review",
+    "handoff",
+    "subagents"
+  ]
+}

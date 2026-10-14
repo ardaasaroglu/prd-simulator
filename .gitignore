@@ -1,0 +1,15 @@
+node_modules/
+*.log
+
+# eval runs write transcripts and reports here, never commit them
+evals/results/
+
+# reports from trying the skill inside this repository
+prd-simulation-*.md
+
+# editor, agent and OS files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.claude/settings.local.json

@@ -1,0 +1,58 @@
+name: evals
+
+# Optional. Runs the eval suite against the real model and is billed to the
+# ANTHROPIC_API_KEY repository secret. It only runs when started by hand.
+on:
+  workflow_dispatch:
+    inputs:
+      max_cost_usd:
+        description: Hard cost ceiling in US dollars, at list price
+        required: true
+        default: "15"
+      runs:
+        description: Runs per case
+        required: true
+        default: "1"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      - name: Install Claude Code (pinned)
+        run: npm install -g @anthropic-ai/claude-code@2.1.295
+      # --threshold 0 keeps the job green on a low score. Read the scores in the uploaded report.
+      - name: Run eval suite
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          MAX_COST_USD: ${{ inputs.max_cost_usd }}
+          RUNS: ${{ inputs.runs }}
+        run: |
+          mkdir -p evals/results/ci
+          claude plugin eval . \
+            --trust-plugin \
+            --allow-tools Write \
+            --runs "$RUNS" \
+            --no-publish \
+            --max-cost-usd "$MAX_COST_USD" \
+            --threshold 0 \
+            --output-dir evals/results/ci \
+            --json evals/results/ci/result.json \
+            --report evals/results/ci/report.html
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: eval-results
+          path: evals/results/
+          if-no-files-found: ignore

@@ -1,0 +1,17 @@
+{
+  "name": "prd-simulator",
+  "owner": {
+    "name": "Arda Asaroglu",
+    "url": "https://github.com/ardaasaroglu"
+  },
+  "metadata": {
+    "description": "Marketplace for the prd-simulator Claude Code plugin."
+  },
+  "plugins": [
+    {
+      "name": "prd-simulator",
+      "source": "./",
+      "description": "Simulate building your PRD before engineers do. Developer personas find what would block them, a skeptic removes the noise, you get a punch list."
+    }
+  ]
+}
