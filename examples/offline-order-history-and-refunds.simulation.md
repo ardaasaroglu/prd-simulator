@@ -3,7 +3,7 @@
 * **Spec:** examples/offline-order-history-and-refunds.md
 * **Date:** 2026-10-14
 * **Seats run:** Backend, Frontend and mobile, Integrations, Data and analytics, Security and privacy, QA and release
-* **Run mode:** example
+* **Run mode:** parallel subagents
 * **Context files:** none
 
 *Example report for a fictional spec. Real runs find and word things differently.*

@@ -50,6 +50,14 @@ git clone https://github.com/ardaasaroglu/prd-simulator.git
 claude --plugin-dir ./prd-simulator
 ```
 
+Then try it on the bundled example:
+
+```text
+/prd-simulator:simulate prd-simulator/examples/team-invites-and-roles.md
+```
+
+`prd-simulator@prd-simulator` reads as plugin@marketplace: this repository is both. Validated with Claude Code 2.1.238 and 2.1.295.
+
 Update with `claude plugin update prd-simulator@prd-simulator`, then restart Claude Code.
 
 ## Usage
