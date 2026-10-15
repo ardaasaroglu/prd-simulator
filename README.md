@@ -10,7 +10,7 @@
 
 *Part of the [example report](examples/team-invites-and-roles.simulation.md) for a fictional PRD.*
 
-> **Status: v0.2.1.** One skill and seven subagents, made of prompts. It works in Claude Code, in Cowork and in claude.ai chat. It passes `claude plugin validate --strict` and its structure is covered by tests. Reports vary from run to run.
+> **Status: v0.2.2.** One skill and seven subagents, made of prompts. It works in Claude Code, in Cowork and in claude.ai chat. It passes `claude plugin validate --strict` and its structure is covered by tests. Reports vary from run to run.
 
 ## Why it exists
 
@@ -74,7 +74,7 @@ You can also paste the spec after the command, or ask in plain words with the sp
 | `--out <path>` | Where to save the report. Default: `prd-simulation-<spec>-<date>.md` in the current directory. |
 | `--context <path>` | Files that record decisions already made or describe the existing system. Anything they answer is not raised. |
 
-The report is saved as markdown. In chat you get a short brief: dev blockers by severity, the biggest risk, each dev blocker with the spec sentence it comes from, the punch list, the scope questions listed separately, and the items to verify with engineering.
+The report is saved as markdown. In chat you get a short brief: dev blockers by severity, the biggest risk, a punch list with one line per dev blocker (owner, recommended default and the spec sentence it comes from), the scope questions by title, and the items to verify with engineering.
 
 ## How it works
 

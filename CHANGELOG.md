@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.2 (2026-10-16)
+
+From a review in Cowork.
+
+* The chat brief has one punch list instead of a table plus separate blocker lines: one line per dev blocker with its owner, recommended default and the spec sentence it comes from. Scope questions are listed by title only.
+* When findings merged from several seats got different verdicts, the item is filed once under the strongest verdict and notes the other one.
+* A merged item is marked "Verify with engineering, not confirmed" only when every merged finding needs that; otherwise it stays a spec gap and names the part to verify.
+
 ## 0.2.1 (2026-10-16)
 
 * In claude.ai chat, the working notes before the report are now short: the seats and the skeptic run in Claude's thinking when it is available, and otherwise as one line per finding and per verdict instead of full json. A chat test of 0.2.0 printed every seat's findings as json ahead of the report.

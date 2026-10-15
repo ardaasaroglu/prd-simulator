@@ -25,7 +25,7 @@ claude plugin eval . --runs 1 --no-publish --max-cost-usd 15 --allow-tools Write
 ```
 
 * `--allow-tools Write` lets the skill save its report. Without it, the skill's instructions say to print the report in chat instead.
-* The graders read the last chat message, not the report file. With Write granted, that message is the short brief from step 5 of the skill, which lists each dev blocker with the spec sentence it comes from, in quotes, followed by the punch list. Without Write, it is the full report. Either way the quoted spec lines and the punch list are in the text the graders read.
+* The graders read the last chat message, not the report file. With Write granted, that message is the short brief from step 5 of the skill, whose punch list gives one line per dev blocker with its owner, recommended default and the spec sentence it comes from, in quotes. Without Write, it is the full report. Either way the quoted spec lines and the punch list are in the text the graders read.
 * By default the command also runs every case without the plugin, as a baseline, and reports the difference. Add `--ablation none` to skip the baseline runs and their cost.
 * `--threshold` defaults to 1.0, so one imperfect case makes the command exit with 1.
 * Results land in `evals/results/<timestamp>/`, which `.gitignore` keeps out of git.
