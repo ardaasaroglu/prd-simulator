@@ -1,64 +1,60 @@
-<h1 align="center">prd-simulator</h1>
+# PRD Simulator
 
-<p align="center"><strong>Simulate building your PRD before engineers do.</strong></p>
+**Simulate building your PRD before engineers do.** A panel of developer personas finds what would block them, a skeptic removes the noise, and you get a punch list.
 
-<p align="center">A panel of developer personas finds what would block them, a skeptic removes the noise, you get a punch list.</p>
+[Install](#install) · [Example prompts](#example-prompts) · [How it works](#how-it-works) · [Example report](examples/team-invites-and-roles.simulation.md) · [The method](docs/method.md) · [Privacy](PRIVACY.md)
 
-<p align="center">
-<a href="#install">Install</a> ·
-<a href="#usage">Usage</a> ·
-<a href="#how-it-works">How it works</a> ·
-<a href="examples/team-invites-and-roles.simulation.md">Example report</a> ·
-<a href="docs/method.md">The method</a> ·
-<a href="docs/evals.md">Evals</a>
-</p>
+[![ci](https://github.com/ardaasaroglu/prd-simulator/actions/workflows/ci.yml/badge.svg)](https://github.com/ardaasaroglu/prd-simulator/actions/workflows/ci.yml)
 
-<p align="center"><a href="https://github.com/ardaasaroglu/prd-simulator/actions/workflows/ci.yml"><img src="https://github.com/ardaasaroglu/prd-simulator/actions/workflows/ci.yml/badge.svg" alt="ci"></a></p>
+![Part of an example report: the summary with the biggest risk, and a punch list of thirteen dev blockers with owners, recommended defaults and severities](docs/assets/example-report.png)
 
-<p align="center"><img src="docs/assets/example-report.png" alt="Part of an example report: the summary with the biggest risk, and a punch list of thirteen dev blockers with owners, recommended defaults and severities" width="720"></p>
+*Part of the [example report](examples/team-invites-and-roles.simulation.md) for a fictional PRD.*
 
-<p align="center"><sub>Part of the <a href="examples/team-invites-and-roles.simulation.md">example report</a> for a fictional PRD.</sub></p>
-
-> **Status: early, v0.1.0.** One skill and seven subagents, made of prompts. It passes `claude plugin validate --strict` and its structure is covered by tests. Reports vary from run to run.
+> **Status: v0.2.0.** One skill and seven subagents, made of prompts. It works in Claude Code, in Cowork and in claude.ai chat. It passes `claude plugin validate --strict` and its structure is covered by tests. Reports vary from run to run.
 
 ## Why it exists
 
 Specs get reviewed for intent. Is this the right feature, does it solve the problem, does everyone agree. Then a developer opens the spec on day one and gets stuck on something nobody read for: which role does the invite link grant, what happens when two people take the last seat, what the screen shows when the call fails offline.
 
-Those questions are cheap before handoff and expensive after it. prd-simulator asks them early by simulating the build. Six developer personas read the spec as the people who have to build it tomorrow, and each one writes down only what would make it stop, or guess. A separate skeptic re-reads the spec and throws out everything that is already answered, speculative or a nit. What is left is a short list of decisions, each tied to the sentence it comes from, with an owner and a recommended default.
+Those questions are cheap before handoff and expensive after it. PRD Simulator asks them early by simulating the build. Six developer personas read the spec as the people who have to build it tomorrow, and each one writes down only what would make it stop, or guess. A separate skeptic re-reads the spec and throws out everything that is already answered, speculative or a nit. What is left is a short list of decisions, each tied to the sentence it comes from, with an owner and a recommended default.
 
 ## Install
 
-In your terminal:
+**claude.ai and Cowork.** Once PRD Simulator is listed in Claude's plugin directory, add it from **Customize > Plugins**. Until then, download this repository as a zip and add it with **Customize > Plugins > Add > Upload plugin**.
+
+**Claude Code.** In your terminal:
 
 ```bash
 claude plugin marketplace add ardaasaroglu/prd-simulator
 claude plugin install prd-simulator@prd-simulator
 ```
 
-Or inside a Claude Code session:
+Or inside a session:
 
 ```text
 /plugin marketplace add ardaasaroglu/prd-simulator
 /plugin install prd-simulator@prd-simulator
 ```
 
-To try it without installing, clone the repository and load it for one session:
+`prd-simulator@prd-simulator` reads as plugin@marketplace: this repository is both. To try it without installing, clone the repository and run `claude --plugin-dir ./prd-simulator`, then `/prd-simulator:simulate prd-simulator/examples/team-invites-and-roles.md`. Update with `claude plugin update prd-simulator@prd-simulator`, then restart Claude Code.
 
-```bash
-git clone https://github.com/ardaasaroglu/prd-simulator.git
-claude --plugin-dir ./prd-simulator
-```
+### What runs where
 
-Then try it on the bundled example:
+| | Claude Code | Cowork | claude.ai chat |
+|---|---|---|---|
+| The seats | Six subagents in parallel | Six subagents in parallel | One after another in the same conversation |
+| The skeptic | Separate subagents, one per seat | Separate subagents, one per seat | A separate final pass that re-reads the spec |
+| The report | A Markdown file in your folder | A Markdown file in your folder | In the conversation, or a file if file creation is on |
 
-```text
-/prd-simulator:simulate prd-simulator/examples/team-invites-and-roles.md
-```
+## Example prompts
 
-`prd-simulator@prd-simulator` reads as plugin@marketplace: this repository is both. Validated with Claude Code 2.1.238 and 2.1.295.
+Each of these works as written. Attach or paste your spec, or point to a file.
 
-Update with `claude plugin update prd-simulator@prd-simulator`, then restart Claude Code.
+* "Here is our PRD for team invites. Simulate the build and tell me what engineers would get stuck on before handoff."
+* "I'm handing this epic and its stories to engineering on Monday. Run a pre-handoff simulation and give me the punch list."
+* "Pressure-test this spec with only the backend and security seats."
+* "Check this PRD against our architecture notes in docs/architecture.md and list only the real blockers."
+* In Claude Code: `/prd-simulator:simulate docs/prd.md --seats backend,qa --out reviews/prd-simulation.md`
 
 ## Usage
 
@@ -139,13 +135,29 @@ Not measured for this release. A full run starts up to 13 model contexts: the ma
 
 Installed, the plugin adds about 740 tokens to every session for the skill and agent descriptions, as estimated by `claude plugin details prd-simulator`. The full prompts load only when the skill runs.
 
-## Using it without Claude Code
+## Using the method without the plugin
 
 The method works with any capable assistant, or with people around a table. [docs/method.md](docs/method.md) describes it on its own, with a prompt to start from. Without subagents, run the seats one after another and the skeptic as a separate final pass, ideally in a fresh conversation, so it judges the findings without the seats' reasoning.
 
+## What it reads, writes and sends
+
+* **Reads:** only the spec you give it (paths, pasted text or an attached document) and any `--context` files.
+* **Sends:** nothing outside your conversation with Claude. The plugin makes no network calls and has no server, account or analytics.
+* **Writes:** one Markdown report. In Claude Code and Cowork it goes in your working folder; in claude.ai chat it appears in the conversation. It never edits the spec.
+
+[PRIVACY.md](PRIVACY.md) has the details.
+
+## Troubleshooting
+
+* **Claude does not use the skill.** Ask for it by name ("run the PRD Simulator on this spec") or, in Claude Code, type `/prd-simulator:simulate` with the spec path. Check that the plugin is turned on in **Customize > Plugins** or with `/plugin`.
+* **"Spec not found".** Use a path relative to the folder Claude Code runs in, or attach the file. A directory stands for the `.md` and `.txt` files in it.
+* **The seats ran one after another.** That is the expected behavior in claude.ai chat, which has no subagents. In Claude Code, it means subagents are turned off; the report header says which run mode was used.
+* **The report is long or noisy.** Run fewer seats with `--seats`, or pass `--context` with the decisions that are already made.
+* **Something else.** Open an issue at https://github.com/ardaasaroglu/prd-simulator/issues with the run mode from the report header and, if you can share it, the spec.
+
 ## Evals
 
-[`evals/`](evals) holds three cases for `claude plugin eval`: a gappy spec must yield blockers tied to quoted spec lines and a punch list, a small complete spec must not get manufactured blockers, and a plain request must trigger the skill. v0.1.0 ships the cases without published scores. [docs/evals.md](docs/evals.md) explains the cases, how to run them and what they cost.
+[`evals/`](evals) holds three cases for `claude plugin eval`: a gappy spec must yield blockers tied to quoted spec lines and a punch list, a small complete spec must not get manufactured blockers, and a plain request must trigger the skill. The cases ship without published scores for now. [docs/evals.md](docs/evals.md) explains the cases, how to run them and what they cost.
 
 ## Limitations
 
@@ -153,11 +165,11 @@ The method works with any capable assistant, or with people around a table. [doc
 * **Results vary between runs.** Two runs on the same spec will not produce identical lists. Treat the report as a checklist for the handoff conversation, not a verdict.
 * **The skeptic is a model too.** It removes much of what is already answered or speculative, but it is not a substitute for a person who knows the product.
 * **Long specs cost more.** Every seat reads the whole spec. A spec set larger than the model's context window will not fit.
-* **The parallel panel needs Claude Code subagents.** The skill launches its seats as plugin subagents named `prd-simulator:<seat>`. If Claude Code rejects those agent types, the skill loads the same prompts into general-purpose subagents and tells them to use only Read, Grep and Glob. That limit is then an instruction, not a tool restriction. Without subagents at all, it falls back to a single context, which is less independent.
+* **The parallel panel needs subagents.** Claude Code and Cowork run the seats in parallel; claude.ai chat runs them one after another in one context, which is less independent. The skill launches its seats as plugin subagents named `prd-simulator:<seat>`. If Claude Code rejects those agent types, the skill loads the same prompts into general-purpose subagents and tells them to use only Read, Grep and Glob. That limit is then an instruction, not a tool restriction.
 
 ## Contributing
 
-Issues and small pull requests are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) first: it explains why seat cards live in two places and how `npm test` keeps them in step. Run `npm test` and `claude plugin validate . --strict` before you open a pull request.
+Issues and small pull requests are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) first: it explains why seat cards live in two places and how `npm test` keeps them in step. Run `npm test` and `claude plugin validate . --strict` (Claude Code 2.1.281 or later) before you open a pull request.
 
 For a security problem, follow [SECURITY.md](SECURITY.md) instead of opening an issue.
 

@@ -1,6 +1,7 @@
 {
   "name": "prd-simulator",
-  "version": "0.1.0",
+  "displayName": "PRD Simulator",
+  "version": "0.2.0",
   "description": "Simulate building your PRD before engineers do. A panel of developer personas finds what would block them, a skeptic removes the noise, you get a punch list.",
   "author": {
     "name": "Arda Asaroglu",
@@ -17,5 +18,9 @@
     "spec-review",
     "handoff",
     "subagents"
-  ]
+  ],
+  "icon": "./assets/icon.png",
+  "documentationUrl": "https://github.com/ardaasaroglu/prd-simulator#readme",
+  "supportUrl": "https://github.com/ardaasaroglu/prd-simulator/issues",
+  "privacyPolicyUrl": "https://github.com/ardaasaroglu/prd-simulator/blob/main/PRIVACY.md"
 }

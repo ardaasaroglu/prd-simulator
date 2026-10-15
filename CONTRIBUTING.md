@@ -12,7 +12,7 @@ Small, focused changes are welcome. A few rules keep the simulator useful.
 Before opening a pull request:
 
 * Run `npm test`. It needs Node 22 or newer and nothing else.
-* Run `claude plugin validate . --strict`. CI runs both.
+* Run `claude plugin validate . --strict` with Claude Code 2.1.281 or later, which accepts the directory listing fields in `plugin.json`. CI runs both.
 * Try the change for real: `claude --plugin-dir .`, then `/prd-simulator:simulate examples/team-invites-and-roles.md`. A prompt that parses is not a prompt that works.
 * If you changed how findings are judged, consider running the eval suite. It makes real model calls and costs money, see [docs/evals.md](docs/evals.md).
 

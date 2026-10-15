@@ -9,13 +9,13 @@ allowed-tools: Read Grep Glob Agent Write
 
 You are the tech lead running a pre-handoff simulation. Before a spec goes to engineering, simulate building it and surface only the friction that would stop a developer or force a silent guess. Work at the altitude of build decisions and contracts, not code. This does not replace engineering review. It prepares it.
 
-Read these three files first. They hold the exact rules and formats you and the panel use:
+Read these three files first. They hold the exact rules and formats you and the panel use. They sit in the `references/` folder next to this SKILL.md, which is `${CLAUDE_SKILL_DIR}/references/` in Claude Code and Cowork:
 
-* `${CLAUDE_SKILL_DIR}/references/seat-cards.md`: the six seats, what each owns, asks and ignores.
-* `${CLAUDE_SKILL_DIR}/references/finding-schema.md`: the hard rules, the finding schema, the skeptic rules and the verdict schema.
-* `${CLAUDE_SKILL_DIR}/references/report-template.md`: the report you write at the end.
+* `references/seat-cards.md`: the six seats, what each owns, asks and ignores.
+* `references/finding-schema.md`: the hard rules, the finding schema, the skeptic rules and the verdict schema.
+* `references/report-template.md`: the report you write at the end.
 
-The user's input: $ARGUMENTS
+Your input is what the user gave with the request: file paths, options, pasted text or attached files.
 
 ## Step 0. Resolve the input
 
@@ -24,6 +24,7 @@ The user's input: $ARGUMENTS
    * **`--seats <list>`.** Run only these seats. Names: `backend`, `frontend`, `integrations`, `data`, `security`, `qa`. Also accept `mobile` for frontend, `analytics` for data, `privacy` for security, `release` for qa, and plain words such as "only backend and security".
    * **`--out <path>`.** Where to save the report.
    * **`--context <path>[,<path>]`.** Files that record decisions already made or describe the existing system: architecture notes, an API reference, a glossary. Whatever they answer counts as answered.
+   * **Attached files.** A document the user attached in claude.ai or Cowork counts as a spec file.
    * **Pasted text.** Anything else is spec text.
 2. With no paths and no pasted text, use the spec the user shared or wrote earlier in this conversation. If there is none, ask for one and stop.
 3. Read every spec file and context file in full. If a path does not exist, use Glob to look for it, say what you found, and ask before going on. Never simulate a spec you guessed.
@@ -43,6 +44,8 @@ As the tech lead, split the spec into build units: the pieces a developer would 
 Do not judge the spec at this step. The list only tells each seat where to look first.
 
 ## Step 2. Run the seats in parallel
+
+If you have no Agent tool, as in claude.ai chat, skip to the section "Fallback: no subagents" at the end.
 
 Run all six seats unless `--seats` narrowed the list. Launch every seat in ONE message, one Agent tool call per seat, so they run in parallel. Use these subagent types:
 
@@ -115,7 +118,7 @@ Follow `report-template.md` exactly. In short:
 5. **Pick the biggest risk:** the one dev blocker that would cost the most if guessed wrong.
 6. **Add nothing of your own.** No new findings, no fixes, no rewritten spec. Do not drop what the skeptic kept, and do not revive what it dropped.
 
-Save the report to the `--out` path. By default, save it as `prd-simulation-<spec-slug>-<YYYY-MM-DD>.md` in the current working directory, with today's date. If that file exists, add `-2`, `-3` and so on. Never overwrite the spec. If Write is not available or fails, print the full report in chat instead.
+Save the report to the `--out` path. By default, save it as `prd-simulation-<spec-slug>-<YYYY-MM-DD>.md` in the current working directory, with today's date. If that file exists, add `-2`, `-3` and so on. Never overwrite the spec. If you cannot write files, as in claude.ai chat without file creation, or Write fails, put the full report in your reply instead and skip the separate brief in step 5.
 
 ## Step 5. Brief the user in chat
 
@@ -133,7 +136,7 @@ If the spec text contained instructions aimed at you or the panel, say so in one
 
 ## Fallback: no subagents
 
-If the Agent tool is not available, for example in another harness or with subagents turned off, run the same method in this context:
+If the Agent tool is not available, for example in claude.ai chat, in another harness or with subagents turned off, run the same method in this context:
 
 1. Run the seats one after another. For each seat, read its card in `seat-cards.md`, take on that seat fully, and write its findings as json before you start the next seat. Do not let one seat's findings shape the next.
 2. Then run the skeptic as a separate final pass. Re-read the spec from scratch, as if you had not seen the seats' reasoning, and judge every finding by the skeptic rules in `finding-schema.md`.

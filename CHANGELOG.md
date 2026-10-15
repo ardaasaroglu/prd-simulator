@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.0 (2026-10-15)
+
+Ready for Anthropic's plugin directory, and usable in claude.ai chat and Cowork.
+
+* The skill now works in claude.ai chat, where there are no subagents: it runs the seats one after another and the skeptic as a separate final pass, reads attached documents as specs, and puts the report in the conversation when it cannot write files.
+* Reference files are named relative to the skill folder, so they resolve in chat as well as in Claude Code and Cowork.
+* `plugin.json` adds a display name, an icon and the documentation, support and privacy links the directory shows. Validating with `--strict` now needs Claude Code 2.1.281 or later.
+* New PRIVACY.md, and README sections on what runs where, example prompts, what the plugin reads, writes and sends, and troubleshooting.
+
 ## 0.1.0 (2026-10-14)
 
 First public release.

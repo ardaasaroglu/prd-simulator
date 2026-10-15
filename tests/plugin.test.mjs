@@ -72,10 +72,46 @@ test("manifests parse and agree on name and version", () => {
   assert.equal(market.owner.name, "Arda Asaroglu");
   assert.doesNotThrow(() => new URL(plugin.homepage));
 
-  // Directory listing fields make `validate --strict` fail on older Claude Code builds.
-  for (const key of ["icon", "documentationUrl", "supportUrl", "privacyPolicyUrl", "termsOfServiceUrl"]) {
-    assert.equal(plugin[key], undefined, `plugin.json has no ${key}`);
+  // Fields Anthropic's directory shows on the listing. Claude Code ignores them at load.
+  for (const key of ["documentationUrl", "supportUrl", "privacyPolicyUrl"]) {
+    assert.match(plugin[key] ?? "", /^https:\/\/github\.com\/ardaasaroglu\/prd-simulator\b/, `plugin.json ${key}`);
   }
+  assert.match(plugin.icon, /^\.\/.+\.png$/, "icon is a PNG inside the plugin");
+  const icon = readFileSync(join(root, plugin.icon));
+  assert.equal(icon.subarray(1, 4).toString("latin1"), "PNG", "icon file is a PNG");
+  assert.ok(existsSync(join(root, "PRIVACY.md")), "the privacy policy the manifest links to exists");
+});
+
+test("the plugin folder meets the directory's file rules", () => {
+  const all = [];
+  const walk = (dir) => {
+    for (const name of readdirSync(dir)) {
+      if ([".git", "node_modules"].includes(name)) continue;
+      const full = join(dir, name);
+      if (statSync(full).isDirectory()) walk(full);
+      else all.push({ rel: relative(root, full).split(sep).join("/"), size: statSync(full).size });
+    }
+  };
+  walk(root);
+  assert.ok(all.length <= 512, "512 files or fewer");
+  assert.ok(!existsSync(join(root, "bin")), "no top-level bin/, which claude.ai and Cowork refuse");
+  for (const { rel, size } of all) {
+    const image = /\.(png|jpe?g|gif|webp|svg)$/i.test(rel);
+    assert.ok(image || TEXT.test(rel.split("/").pop()) || rel === "LICENSE", `${rel}: only text files and images`);
+    assert.ok(image || size < 256 * 1024, `${rel}: under 256 KiB`);
+    assert.doesNotMatch(rel, /(^|\/)(\.DS_Store|Thumbs\.db|desktop\.ini|__MACOSX)$/, `${rel}: no system files`);
+  }
+});
+
+test("the README works as the directory listing", () => {
+  const readme = read("README.md");
+  const prose = readme.replace(/```[\s\S]*?```/g, " ");
+  assert.ok(prose.split(/\s+/).filter(Boolean).length >= 40, "40 words or more outside code blocks");
+  assert.doesNotMatch(readme, /<img\b/i, "bundled images use Markdown image syntax");
+  const prompts = readme.split("## Example prompts")[1]?.split("\n## ")[0] ?? "";
+  assert.ok(prompts.split("\n").filter((l) => /^\* /.test(l)).length >= 3, "at least three example prompts");
+  for (const heading of ["## What it reads, writes and sends", "## Troubleshooting"]) assert.ok(readme.includes(heading), heading);
+  assert.doesNotMatch(read("skills/simulate/SKILL.md"), /\$ARGUMENTS/, "no placeholder that chat would show literally");
 });
 
 test("the skill has valid frontmatter and stays short", () => {
