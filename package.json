@@ -1,6 +1,6 @@
 {
   "name": "prd-simulator",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "description": "Simulate building your PRD before engineers do. A panel of developer personas finds what would block them, a skeptic removes the noise, you get a punch list.",
   "license": "MIT",

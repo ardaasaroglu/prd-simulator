@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1 (2026-10-16)
+
+* In claude.ai chat, the working notes before the report are now short: the seats and the skeptic run in Claude's thinking when it is available, and otherwise as one line per finding and per verdict instead of full json. A chat test of 0.2.0 printed every seat's findings as json ahead of the report.
+
 ## 0.2.0 (2026-10-15)
 
 Ready for Anthropic's plugin directory, and usable in claude.ai chat and Cowork.

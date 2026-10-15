@@ -10,7 +10,7 @@
 
 *Part of the [example report](examples/team-invites-and-roles.simulation.md) for a fictional PRD.*
 
-> **Status: v0.2.0.** One skill and seven subagents, made of prompts. It works in Claude Code, in Cowork and in claude.ai chat. It passes `claude plugin validate --strict` and its structure is covered by tests. Reports vary from run to run.
+> **Status: v0.2.1.** One skill and seven subagents, made of prompts. It works in Claude Code, in Cowork and in claude.ai chat. It passes `claude plugin validate --strict` and its structure is covered by tests. Reports vary from run to run.
 
 ## Why it exists
 
