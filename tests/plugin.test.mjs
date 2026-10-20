@@ -233,3 +233,22 @@ test("shipped text keeps local paths, emails and keys out", () => {
   }
   assert.deepEqual(problems, []);
 });
+
+// Keys and values documented at https://code.claude.com/docs/en/plugin-evals.
+// An unknown prompt.md key is an error there; a mistyped grader key would fail quietly.
+test("eval cases and graders use only documented keys", () => {
+  const PROMPT_KEYS = ["schema_version", "name", "description", "expected_outcome", "tags", "plugins", "runs", "model", "max_turns", "timeout_seconds", "allowed_tools", "append_system_prompt", "env"];
+  const GRADER_KEYS = { regex: ["pattern", "flags", "match", "target"], tool_used: ["tool", "input_match", "min", "max"], llm: ["focus"] };
+  const cases = readdirSync(join(root, "evals")).filter((d) => d !== "results" && statSync(join(root, "evals", d)).isDirectory());
+  for (const c of cases) {
+    for (const key of Object.keys(frontmatter(read(`evals/${c}/prompt.md`)))) assert.ok(PROMPT_KEYS.includes(key), `${c}: "${key}" is not a documented prompt.md key`);
+    for (const g of readdirSync(join(root, "evals", c, "graders"))) {
+      const fields = frontmatter(read(`evals/${c}/graders/${g}`));
+      const allowed = ["type", "weight", "arm", ...(GRADER_KEYS[fields.type] ?? [])];
+      for (const key of Object.keys(fields)) assert.ok(allowed.includes(key), `${c}/${g}: "${key}" is not a documented ${fields.type} key`);
+      if (fields.arm) assert.ok(["with-only", "both"].includes(fields.arm), `${c}/${g}: arm is with-only or both`);
+      if (fields.match) assert.match(fields.match, /^(not_contains|count:\d+)$/, `${c}/${g}: match is not_contains or count:N`);
+      if (fields.tool === "Skill" && fields.arm === "both") assert.equal(fields.max, "0", `${c}/${g}: a positive skill check must not score the baseline arm`);
+    }
+  }
+});

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.3 (2026-10-20)
+
+* Eval graders use only the keys the plugin eval docs list. The regex graders drop `match: contains`, since finding a match is already the default, and the skill check is an unscored indicator again: scoring it in the baseline arm, where the skill cannot run, inflated the with and without difference.
+* A test rejects any eval prompt or grader key the docs do not list.
+
 ## 0.2.2 (2026-10-16)
 
 From a review in Cowork.

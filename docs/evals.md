@@ -12,7 +12,7 @@ The repository ships an eval suite for `claude plugin eval`. It checks three thi
 |---|---|---|---|
 | `gappy-spec-blockers` | A short, gappy PRD for recurring tasks, with a plain request to simulate it | `regex` for a punch list, `regex` for a quoted spec line, `llm` judge | At least three gaps are tied to spec sentences, at least two are among the known gaps (custom repeats, month-end and time zones, what "future tasks" means, never-completed tasks, shared projects), and the answer includes a punch list with owners and defaults |
 | `tight-spec-no-noise` | A small, complete spec for a keyboard shortcut | `llm` judge | No dev blockers, or exactly one of low severity. Scope questions and dropped noise do not count |
-| `natural-request-fires` | "I'm handing this epic to the engineers on Monday. What are they going to get stuck on?" with a short epic | `tool_used: Skill` matching `prd-simulator:simulate`, scored in both arms, and a `regex` for a punch list | The skill is invoked without being named |
+| `natural-request-fires` | "I'm handing this epic to the engineers on Monday. What are they going to get stuck on?" with a short epic | `tool_used: Skill` matching `prd-simulator:simulate`, an unscored indicator in the with arm, and a `regex` for a punch list | The skill is invoked without being named, and the reply has a punch list |
 
 All three prompts are fictional. The cases live in [`evals/`](../evals).
 
